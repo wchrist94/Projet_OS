@@ -14,4 +14,6 @@ void console_clear();
 
 void console_putchar(const char c);
 
+void console_putcursor();
+
 #endif

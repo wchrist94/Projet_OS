@@ -1,16 +1,19 @@
 DOCKER=docker
 DOCKER_IMAGE=i386-elf-gcc
-DOCKER_IMAGE_EXISTS=$(shell docker images $(DOCKER_IMAGE) | grep $(DOCKER_IMAGE) | cut -d' ' -f1)
-ifeq ($(DOCKER_IMAGE_EXISTS), $(DOCKER_IMAGE))
-	DOCKER_BUILD= @echo Docker image already exists 
-else
-	DOCKER_BUILD= $(DOCKER) build -t $(DOCKER_IMAGE) docker
+CPU=$(shell uname -m)
+ifeq ($(CPU), arm54)
+	DOCKER_IMAGE_EXISTS=$(shell docker images $(DOCKER_IMAGE) | grep $(DOCKER_IMAGE) | cut -d' ' -f1)
+	ifeq ($(DOCKER_IMAGE_EXISTS), $(DOCKER_IMAGE))
+		DOCKER_BUILD= @echo Docker image already exists 
+	else
+		DOCKER_BUILD= $(DOCKER) build -t $(DOCKER_IMAGE) docker
+	endif
 endif
 
 CWD=$(shell pwd)
 PROJECT=$(shell dirname $(CWD))
 CURRENT=$(shell basename $(CWD))
-CPU=$(shell uname -m)
+
 OS=$(shell uname -s)
 ifeq ($(CPU), arm64)
 	PREFIX=$(DOCKER) run --rm -ti -v $(PROJECT):/usr/src/myapp -w /usr/src/myapp/$(CURRENT) $(DOCKER_IMAGE) i386-elf-
