@@ -1,14 +1,7 @@
-CC= gcc
-CFLAGS= -m32 -gstabs -std=c99 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
-         -nostartfiles -nodefaultlibs -Wall -Werror -I../include
+include ../build/build_env.mak
 
-LD= ld
-LDFLAGS = -melf_i386
-
-AS= gcc
-ASFLAGS= -m32 -DASSEMBLER -g -gstabs -I../include
-
-OBJCOPY= objcopy
+CFLAGS += -I../include
+ASFLAGS += -I../include
 
 OBJECTS = $(addsuffix .o, $(basename  $(wildcard *.c *.S)))
 

@@ -1,5 +1,5 @@
 #include <n7OS/sys.h>
-#include "syscall_defs.h"
+#include <n7OS/syscall_defs.h>
 #include <n7OS/console.h>
 #include <n7OS/irq.h>
 #include <unistd.h>

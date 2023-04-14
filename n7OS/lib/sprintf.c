@@ -43,7 +43,7 @@
 #include <stdarg.h>
 #include <doprnt.h>
 
-#define SPRINTF_UNLIMITED -1
+#define SPRINTF_UNLIMITED 0xFFFFFFFF
 struct sprintf_state {
       char *buf;
       unsigned int len;

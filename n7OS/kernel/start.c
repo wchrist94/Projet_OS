@@ -11,7 +11,7 @@ void kernel_start(void)
     while (1) {
         // cette fonction arrete le processeur
         console_clear();
-        console_putbytes("Hello,World", 12);
+        console_putbytes("Hello,World\ra", 13);
         hlt();
     }
 }

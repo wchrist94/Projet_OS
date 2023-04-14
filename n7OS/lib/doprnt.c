@@ -380,6 +380,7 @@ void _doprnt(fmt, args, radix, putc, putc_arg)
 
 		case 'o':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'O':
 		    base = 8;
 		    goto print_unsigned;
@@ -387,6 +388,7 @@ void _doprnt(fmt, args, radix, putc, putc_arg)
 		case 'd':
 	        case 'i':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'D':
 		    base = 10;
 		    goto print_signed;
@@ -401,7 +403,7 @@ void _doprnt(fmt, args, radix, putc, putc_arg)
 		case 'G':
 		case 'e':
 		case 'E':
- 		    truncate = _doprnt_truncates;
+ 		    truncate = FALSE;
 		    base = 10;
 		    {
 			static int first = 1;
@@ -467,6 +469,7 @@ void _doprnt(fmt, args, radix, putc, putc_arg)
 
 		case 'u':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'U':
 		    base = 10;
 		    goto print_unsigned;
@@ -481,26 +484,31 @@ void _doprnt(fmt, args, radix, putc, putc_arg)
 		     */
 		    (*putc)(putc_arg, '0');
 		    (*putc)(putc_arg, 'x');
+			/*[[fallthrough]];*/
 		case 'x':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'X':
 		    base = 16;
 		    goto print_unsigned;
 
 		case 'z':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'Z':
 		    base = 16;
 		    goto print_signed;
 
 		case 'r':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'R':
 		    base = radix;
 		    goto print_signed;
 
 		case 'n':
  		    truncate = _doprnt_truncates;
+			/*[[fallthrough]];*/
 		case 'N':
 		    base = radix;
 		    goto print_unsigned;
