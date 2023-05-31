@@ -43,6 +43,7 @@ void console_putchar(const char c){
             default:
                 break;
         }
+        
     }
     console_putcursor();
 }
