@@ -8,10 +8,17 @@ void kernel_start(void)
 {
     
     // on ne doit jamais sortir de kernel_start
-    while (1) {
-        // cette fonction arrete le processeur
-        console_clear();
-        console_putbytes("Hello,World", 12);
+    while(1){
+        printf("\f");
+        printf("Hello,World\n");
+
+        // Test appels systèmes
+        sti();
+
+        if (example() == 1) {
+            printf("Appel système example ok\n");
+        }
+
         hlt();
     }
 }

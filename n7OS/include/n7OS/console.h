@@ -1,8 +1,14 @@
 #ifndef __CONSOLE_H__
 #define __CONSOLE_H__
-#define MAX_COLS 80
-#define MAX_LIGNES 25
-#define MAX_SIZE (MAX_COLS*MAX_LIGNES)
+
+#define NB_COL 80                 // 80 columns
+#define NB_ROW 25                 // 25 rows
+#define MAX_POS (NB_COL * NB_ROW) // Maximal position
+#define FORMAT 0x0F               // Text formatting
+
+#define START_POS NB_COL
+
+typedef __UINT16_TYPE__ console_entry;
 
 /*
  * This is the function called by printf to send its output to the screen. You
@@ -10,10 +16,6 @@
  */
 void console_putbytes(const char *s, int len);
 
-void console_clear();
-
-void console_putchar(const char c);
-
-void console_putcursor();
+void console_putbytes_at(const char *s, int len, int tpos);
 
 #endif
