@@ -62,10 +62,11 @@ void console_putchar(char c)
         }
         
     }
-
+    // Si on est à la fin de l'écran, on défile
     if (position == MAX_INDX)
         console_slide();
 
+    // On affiche le curseur
     console_putcursor();
 }
 
