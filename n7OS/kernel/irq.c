@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <n7OS/irq.h>
+#include <stdio.h>
 
 
 void init_irq_entry(int irq_num, uint32_t addr) {

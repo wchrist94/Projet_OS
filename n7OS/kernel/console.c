@@ -77,3 +77,12 @@ void console_putbytes(const char *s, int len)
         console_putchar(s[i]);
 }
 
+void console_putbytes_at(const char *s, int len, int tpos)
+{
+    int prev_pos = position;
+    position = tpos;
+    console_putcursor();
+    console_putbytes(s, len);
+    position = prev_pos;
+    console_putcursor();
+}
