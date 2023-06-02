@@ -23,9 +23,10 @@ void kernel_start(void)
 
     while (1)
     {
+        //console_clear();
         // Test Console OK
         //for (int i = 0; i < 10000; i++)
-         //printf("hello world\t%i\n", i);
+            //printf("hello world\t%i\n", i);
         // cette fonction arrete le processeur
 
         // TEST IRQ OK

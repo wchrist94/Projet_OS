@@ -29,7 +29,7 @@
 // Numéro de l'IT du timer
 #define TIMER_IT 0x20
 
-#define ROUND_ROBIN 5000
+#define ROUND_ROBIN 1500
 
 
 void init_timer();

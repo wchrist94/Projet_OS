@@ -46,8 +46,7 @@ void arreter() {
 }
 
 void terminer() {
-    if (current_process->state == ELU)
-        current_process->state = FINI;
+    current_process->state = FINI;
     schedule();
 }
 
@@ -63,10 +62,14 @@ void debloquer() {
     schedule();
 }
 
+pid_t get_pid() {
+    return current_process->pid;
+}
 
 void schedule(){
-    pid_t pid = current_process->pid;
+    pid_t pid = get_pid();
     pid_t next_pid = -1;
+
 
     printf("Schedule\n");
     for (pid_t i = 1; i < NB_PROC; i++) {
@@ -76,26 +79,36 @@ void schedule(){
             break;
         }
     }
-
+    
 
     if (next_pid == -1) {
         printf("Aucun processus prêt\n");
         return;
     } else {
-        if (current_process->state == ELU)
+        if (current_process->state == ELU) 
             current_process->state = PRET;
+            
+        
 
-    
         process_table[next_pid].state = ELU;
         printf("pid = %d\n", next_pid);
         printf("process_table[next_pid].state = %d\n", process_table[next_pid].state);
-        printf("Changement de processus\n");
+        printf("name = %s\n", process_table[next_pid].name);
+        printf("Changement de processus\n");   
         current_process = &process_table[next_pid];
 
+        //if (strcmp(current_process->name, "idle") == 0)
+            //exit();
+        
+        
+
+        
         ctx_sw(&process_table[pid].ctx, &process_table[next_pid].ctx);
     }
     
 }
+
+
 
 
 
@@ -104,10 +117,8 @@ void init_process() {
     for (int i = 0; i < NB_PROC; i++) {
         process_table[i].state = FINI;
     }
-    pid_t pid_idle = creer("idle", (fnptr)idle);
-    pid_t pid_p1 = creer("processus1", (fnptr)processus1);
-    pid_t pid_p2 = creer("processus2", (fnptr)processus1);
-    pid_t pid_p3 = creer("processus3", (fnptr)processus1);
+    pid_t pid_idle = fork("idle", (fnptr)idle);
+    pid_t pid_p1 = fork("processus1", (fnptr)processus1);
 
     current_process = &process_table[pid_idle];
     current_process->state = ELU;
