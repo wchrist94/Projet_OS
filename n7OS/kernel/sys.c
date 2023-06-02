@@ -15,6 +15,10 @@ void init_syscall()
     add_syscall(NR_example, sys_example);
     add_syscall(NR_shutdown, sys_shutdown);
     add_syscall(NR_write, sys_write);
+    add_syscall(NR_fork, sys_fork);
+    add_syscall(NR_exit, sys_exit);
+    add_syscall(NR_getpid, sys_getpid);
+    add_syscall(NR_sleep, sys_sleep);
 
     // initialisation de l'IT soft qui gère les appels systeme
     init_irq_entry(0x80, (uint32_t)handler_syscall);
@@ -38,9 +42,27 @@ int sys_shutdown(int n)
         return n;
 }
 
-int sys_write(const char *s, int len)
-{
+int sys_write(const char *s, int len) {
     console_putbytes(s, len);
     return len;
+}
+
+pid_t sys_fork(const char *name, fnptr function) {
+    pid_t pid = creer(name, function);
+    return pid;
+}
+
+int sys_exit(int n) {
+    terminer();
+    return 0;
+}
+
+pid_t sys_getpid() {
+    return getpid();
+}
+
+int sys_sleep(int n) {
+    bloquer(n);
+    return 0;
 }
 

@@ -11,8 +11,7 @@ static process_t *current_process;
 // PID courant
 pid_t pid_counter = 0;
 
-// Liste des processus en attente
-static process_t *waiting_list[NB_PROC];
+
 
 extern void ctx_sw(void *ctx_old, void *ctx_new);
 extern void processus1();
@@ -29,7 +28,9 @@ pid_t creer(const char *name, fnptr function) {
             pid_counter++;
             new_process->state = PRET;
             strcpy(new_process->name, name);
+            memset(new_process->stack, 0, sizeof(new_process->stack));
             new_process->stack[STACK_SIZE - 1] = (uint32_t)function;
+            memset(new_process->ctx, 0, sizeof(new_process->ctx));
             new_process->ctx[ESP] = (uint32_t)&new_process->stack[STACK_SIZE - 1];
             return new_process->pid;
         }
@@ -64,7 +65,7 @@ void debloquer() {
 
 
 void schedule(){
-    pid_t pid = getpid();
+    pid_t pid = current_process->pid;
     pid_t next_pid = -1;
 
     printf("Schedule\n");
@@ -75,16 +76,20 @@ void schedule(){
             break;
         }
     }
-    printf("next_pid = %d\n", next_pid);
+
 
     if (next_pid == -1) {
         printf("Aucun processus prêt\n");
         return;
     } else {
-        printf(process_table[next_pid].state == ELU ? "ELU\n" : "PRET\n");
         if (current_process->state == ELU)
             current_process->state = PRET;
+
+    
         process_table[next_pid].state = ELU;
+        printf("pid = %d\n", next_pid);
+        printf("process_table[next_pid].state = %d\n", process_table[next_pid].state);
+        printf("Changement de processus\n");
         current_process = &process_table[next_pid];
 
         ctx_sw(&process_table[pid].ctx, &process_table[next_pid].ctx);
@@ -93,9 +98,6 @@ void schedule(){
 }
 
 
-pid_t getpid() {
-    return current_process->pid;
-}
 
 void init_process() {
     
@@ -104,6 +106,8 @@ void init_process() {
     }
     pid_t pid_idle = creer("idle", (fnptr)idle);
     pid_t pid_p1 = creer("processus1", (fnptr)processus1);
+    pid_t pid_p2 = creer("processus2", (fnptr)processus1);
+    pid_t pid_p3 = creer("processus3", (fnptr)processus1);
 
     current_process = &process_table[pid_idle];
     current_process->state = ELU;

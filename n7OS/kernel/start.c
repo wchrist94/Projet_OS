@@ -9,6 +9,8 @@
 #include <n7OS/process.h>
 #include <n7OS/console.h>
 
+
+
 void kernel_start(void)
 {
     console_clear();

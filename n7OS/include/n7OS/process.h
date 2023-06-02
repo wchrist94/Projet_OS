@@ -51,25 +51,7 @@ void terminer();
 void bloquer();
 void debloquer();
 
-pid_t getpid();
-int exit();
-pid_t fork(const char *name, fnptr function);
-int sleep(int n);
 
-// Liste des processus en attente
-typedef struct
-{
-    pid_t pid;
-    waiting_process_list_t *next;
-} waiting_process_list_t;
-
-// Liste des processus endormis
-typedef struct
-{
-    pid_t pid;
-    int time;
-    sleeping_process_list_t *next;
-} sleeping_process_list_t;
 
 // à fin de tests
 void init_process();
