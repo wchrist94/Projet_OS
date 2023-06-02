@@ -16,4 +16,6 @@ void console_putcursor();
 
 void console_slide();
 
+void console_putbytes_at(const char *s, int len, int tpos);
+
 #endif

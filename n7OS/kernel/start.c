@@ -8,41 +8,48 @@
 #include <n7OS/sys.h>
 #include <n7OS/process.h>
 
-/**
- * Ce qui fonctionne :
- * - L'affichage
- * - Les IRQ
- * - Syscalls `write`, `shutdown` et `schedule`
- * - Timer
- * - Processus et RR
- */
 void kernel_start(void)
 {
-    // inits
-    init_irq();
-    init_timer();
-    init_syscall();
 
-    // affichage
-    printf("\f");
-    // for (int i = 0; i < 10000; i++)
-    //     printf("hello world\t%i\n", i);
-
-    // irq
-    __asm__("int $50" ::);
-
-    // syscalls
-    if (example() == 1)
-        printf("Appel systeme systeme ok\n");
-    // shutdown(1);
-
-    // processus
-    init_process();
-
-    // on ne doit jamais sortir de kernel_start
     while (1)
     {
+
+        console_clear();
+
+        // Test Console OK
+        //for (int i = 0; i < 10000; i++)
+         //printf("hello world\t%i\n", i);
         // cette fonction arrete le processeur
+
+        // TEST IRQ OK
+        //init_irq();
+        //sti();
+        //__asm__("int $50" ::);
+
+        // TEST timer OK   
+        //init_timer();
+        //sti();
+
+
+        
+        // TEST SYSCALL OK
+        //init_syscall();
+
+        // Test Syscall example
+        //sti();
+        //if (example() == 1)
+            //printf("Appel systeme example OK\n");
+
+        // Test Syscall shutdown
+        //shutdown(1);
+
+        // Test Syscall write
+        //printf("Appel systeme write OK\n");
+
+        // TEST PROCESS
+        //init_process();
+
+        
         hlt();
     }
 }

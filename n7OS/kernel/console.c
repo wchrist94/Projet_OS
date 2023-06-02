@@ -40,7 +40,6 @@ void console_putcursor()
 // Affiche un caractère à la position courante
 void console_putchar(char c)
 {
-
     if(c > 31 && c < 127) {
         scr_tab[position++] = 0x0F << 8 | c;
     } else {
@@ -59,8 +58,7 @@ void console_putchar(char c)
                 break;
             default:
                 break;
-        }
-        
+        } 
     }
     // Si on est à la fin de l'écran, on défile
     if (position == MAX_INDX)

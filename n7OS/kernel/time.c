@@ -3,54 +3,74 @@
 #include <inttypes.h>
 #include <n7OS/console.h>
 #include <n7OS/cpu.h>
+#include <stdio.h>
 
 extern void handler_IT_timer();
 
+// Initialisation de la valeur du timer time est en ms
 static int time = 0;
 
-// demasquage de l'IT
-void demasquer()
-{
-    outb(inb(PIC_DATA) & ~(1 << IRQ_PORT_NUM), PIC_DATA);
-}
-
-// masquage de l'IT
+// Masquage de l'IT
 void masquer()
 {
-    outb(inb(PIC_DATA) | (1 << IRQ_PORT_NUM), PIC_DATA);
+    // Désactivation de l'IT du timer
+    outb(inb(PIC_DATA) | (1 << NumPortIRQ), PIC_DATA);
+}
+
+
+// Demasquage de l'IT
+void demasquer()
+{
+    // Activation de l'IT du timer
+    outb(inb(PIC_DATA) & ~(1 << NumPortIRQ), PIC_DATA);
+}
+
+// Acquittement de l'IT
+void ack()
+{
+    // ACK de l'IT du master
+    outb(PIC_CMD, PIC_CMD);
 }
 
 void init_timer()
 {
-    // configuration du PIT
-    outb(PIT_CONFIG, REG);
-    // fréquence timer
-    outb(FREQ & 0xFF, CH0);
-    outb(FREQ >> 8, CH0);
-    // enregistrement du handler
+
+
+    // Configuration
+
+    // Channel 0, accès LSB/MSB, gérateur d'imulsions, fréquence binaire
+    outb(0x34, REG_PORT); 
+    // Affectation de la fréquence, poids faible au Channel 0
+    outb(FREQ & 0xFF, CH0_PORT);
+    // Affectation de la fréquence, poids fort au Channel 0
+    outb(FREQ >> 8, CH0_PORT);
+
+        // Enregistrement de l'IT correspondante
     init_irq_entry(TIMER_IT, (uint32_t)handler_IT_timer);
+
     // demasquage de l'IT
     demasquer();
 }
 
-void print_time(int i)
+// Affichage du temps
+void format_timer(long milliseconds)
 {
-    // ouais c'est moche
-    int h, m, s;
-    h = i / 3600000;
-    m = (i - h * 3600000) / 60000;
-    s = (i - h * 3600000 - m * 60000) / 1000;
-    // print
-    char buf[8];
-    sprintf(buf, "%02i:%02i:%02i", h, m, s);
-    console_putbytes_at(buf, 8, MAX_COLS - 8);
+    long heures, minutes, secondes;
+    // Conversion en hh:mm:ss
+    secondes = (milliseconds / 1000) % 60;
+    minutes = (milliseconds / (1000 * 60)) % 60;
+    heures = (milliseconds / (1000 * 60 * 60));
+    char horloge[8];
+    sprintf(horloge, "%02ld:%02ld:%02ld", heures, minutes, secondes);
+    console_putbytes_at(horloge, 8, MAX_COLS - 8);
 }
 
 void handler_it_timer()
 {
-    outb(0x20, PIC_CMD); // ack
-    print_time(time++);
-    sti(); // le timer ne marche plus après schedule sinon
-    if (time % RR_PERIOD == 0)
-        scheduler();
+    // Acquittement de l'IT
+    ack();
+
+    // Affichage du temps et incrémentation
+    format_timer(time++);
+
 }

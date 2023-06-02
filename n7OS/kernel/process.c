@@ -3,11 +3,11 @@
 #include <n7OS/cpu.h>
 #include <stdio.h>
 
-// table des processus
+// Table des processus
 static process_t process_table[NB_PROC];
-// processus courant (pointeur sur une case de process_table)
+// Processus courant
 static process_t *current_process;
-// premier pid libre
+// PID courant
 static pid_t pid_counter = 0;
 
 pid_t creer(const char *name, fnptr function)
