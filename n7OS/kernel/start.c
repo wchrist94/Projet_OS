@@ -7,15 +7,20 @@
 #include <unistd.h>
 #include <n7OS/sys.h>
 #include <n7OS/process.h>
+#include <n7OS/console.h>
 
 void kernel_start(void)
 {
+    console_clear();
+    init_irq();
+    init_syscall();   
+    init_timer();
+    sti();
+    init_process();
+
 
     while (1)
     {
-
-        console_clear();
-
         // Test Console OK
         //for (int i = 0; i < 10000; i++)
          //printf("hello world\t%i\n", i);
@@ -25,7 +30,7 @@ void kernel_start(void)
         //init_irq();
         //sti();
         //__asm__("int $50" ::);
-
+        //init_syscall();
         // TEST timer OK   
         //init_timer();
         //sti();
@@ -33,7 +38,7 @@ void kernel_start(void)
 
         
         // TEST SYSCALL OK
-        //init_syscall();
+        
 
         // Test Syscall example
         //sti();
@@ -48,7 +53,6 @@ void kernel_start(void)
 
         // TEST PROCESS
         //init_process();
-
         
         hlt();
     }

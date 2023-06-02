@@ -6,10 +6,19 @@
 
 #define STACK_SIZE 1024
 
-typedef (void*) (*fnptr)();
+typedef void* (*fnptr)();
 
 // Définition d'un pid
 typedef uint32_t pid_t;
+
+// Etat d'un processus
+typedef enum
+{
+    FINI,
+    ELU,
+    PRET,
+    BLOQUE,
+} PROCESS_STATE;
 
 // Définition d'un processus
 typedef struct
@@ -24,14 +33,6 @@ typedef struct
     uint32_t ctx[5];
 } process_t;
 
-// Etat d'un processus
-typedef enum
-{
-    ELU,
-    PRET,
-    BLOQUE,
-} PROCESS_STATE;
-
 // Registres
 typedef enum
 {
@@ -44,7 +45,7 @@ typedef enum
 
 // Fonctions
 pid_t creer(const char *name, fnptr function);
-void scheduler();
+void schedule();
 void arreter();
 void terminer();
 void bloquer();
@@ -54,6 +55,21 @@ pid_t getpid();
 int exit();
 pid_t fork(const char *name, fnptr function);
 int sleep(int n);
+
+// Liste des processus en attente
+typedef struct
+{
+    pid_t pid;
+    waiting_process_list_t *next;
+} waiting_process_list_t;
+
+// Liste des processus endormis
+typedef struct
+{
+    pid_t pid;
+    int time;
+    sleeping_process_list_t *next;
+} sleeping_process_list_t;
 
 // à fin de tests
 void init_process();

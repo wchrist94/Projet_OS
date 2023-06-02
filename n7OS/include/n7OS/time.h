@@ -29,7 +29,7 @@
 // Numéro de l'IT du timer
 #define TIMER_IT 0x20
 
-#define RR_PERIOD 2000 // 2s
+#define ROUND_ROBIN 1000
 
 
 void init_timer();

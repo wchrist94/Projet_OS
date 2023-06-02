@@ -4,6 +4,7 @@
 #include <n7OS/console.h>
 #include <n7OS/cpu.h>
 #include <stdio.h>
+#include <n7OS/process.h>
 
 extern void handler_IT_timer();
 
@@ -72,5 +73,9 @@ void handler_it_timer()
 
     // Affichage du temps et incrémentation
     format_timer(time++);
+
+    sti();
+    if (time % ROUND_ROBIN == 0)
+        schedule();
 
 }
