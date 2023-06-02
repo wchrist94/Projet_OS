@@ -1,82 +1,78 @@
 #include <n7OS/console.h>
 #include <n7OS/cpu.h>
+#include <inttypes.h>
+#include <string.h>
 
-console_entry *scr_tab = (console_entry *)0xB8000;
-int cursor_pos = START_POS; // cursor position
+uint16_t *scr_tab = (uint16_t *)0xB8000; 
+int position = 0; // Position du curseur
 
-// Slide the screen up one line
+// Défilement de l'écran
 void console_slide()
 {
-    for (int i = START_POS; i < MAX_POS - NB_COL; i++)
-        scr_tab[i] = scr_tab[i + NB_COL];
-    for (int i = MAX_POS - NB_COL; i < MAX_POS; i++)
-        scr_tab[i] = FORMAT << 8;
-    cursor_pos = MAX_POS - NB_COL;
+    // On décale les lignes de l'écran
+    for (int i = 0; i < MAX_INDX - MAX_COLS; i++)
+        scr_tab[i] = scr_tab[i + MAX_COLS];
+    // On efface la dernière ligne
+    for (int i = MAX_INDX - MAX_COLS; i < MAX_INDX; i++)
+        scr_tab[i] = 0x0F << 8;
+
+    // On remonte le curseur d'une ligne
+    position = MAX_INDX - MAX_COLS;
 }
 
-// Position the cursor at pos
+// Efface l'écran
+void console_clear()
+{
+    for (int i = 0; i < MAX_INDX; i++)
+        scr_tab[i] = 0x0F << 8;
+    position = 0;
+}
+
+// Affiche le curseur à la position courante
 void console_putcursor()
 {
     outb(0xF, 0x3D4);
-    outb(cursor_pos & 0xFF, 0x3D5);
+    outb(position & 0xFF, 0x3D5);
     outb(0xE, 0x3D4);
-    outb((cursor_pos >> 8) & 0xFF, 0x3D5);
+    outb((position >> 8) & 0xFF, 0x3D5);
 }
 
-// Put a character at the cursor position
+// Affiche un caractère à la position courante
 void console_putchar(char c)
 {
-    switch (c)
-    {
-    case '\b': // backward
-        cursor_pos -= 1;
-        break;
 
-    case '\t': // tab
-        cursor_pos += 8;
-        break;
-
-    case '\n': // new line
-        cursor_pos += NB_COL - cursor_pos % NB_COL;
-        break;
-
-    case '\f': // flush
-        for (int i = 0; i < MAX_POS; i++)
-            scr_tab[i] = FORMAT << 8;
-        cursor_pos = START_POS;
-        break;
-
-    case '\r': // return to beginning of line
-        cursor_pos -= cursor_pos % NB_COL;
-        break;
-
-    default: // print the character
-        if (c > 31 && c < 127)
-            scr_tab[cursor_pos++] = FORMAT << 8 | c;
-        break;
+    if(c > 31 && c < 127) {
+        scr_tab[position++] = 0x0F << 8 | c;
+    } else {
+        switch (c) {
+            case '\b' :
+                position -= 1;
+                break;
+            case '\n' :
+                position += MAX_COLS - (position % MAX_COLS);
+                break;
+            case '\r' :
+                position -= position % MAX_COLS;
+                break;
+            case '\f': 
+                console_clear();
+                break;
+            default:
+                break;
+        }
+        
     }
 
-    // slide the screen if needed
-    if (cursor_pos == MAX_POS)
+    if (position == MAX_INDX)
         console_slide();
 
-    // update the cursor position
     console_putcursor();
 }
 
+// Affiche une chaîne de caractères à la position courante
 void console_putbytes(const char *s, int len)
 {
     for (int i = 0; i < len; i++)
         console_putchar(s[i]);
 }
 
-// pour print à une certaine position puis "revenir"
-void console_putbytes_at(const char *s, int len, int tpos)
-{
-    int prev_pos = cursor_pos;
-    cursor_pos = tpos;
-    console_putcursor();
-    console_putbytes(s, len);
-    cursor_pos = prev_pos;
-    console_putcursor();
-}
