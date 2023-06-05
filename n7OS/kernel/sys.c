@@ -42,25 +42,31 @@ int sys_shutdown(int n)
         return n;
 }
 
+// code de la fonction de traitement de l'appel systeme write
 int sys_write(const char *s, int len) {
     console_putbytes(s, len);
     return len;
 }
 
+// code de la fonction de traitement de l'appel systeme fork
 pid_t sys_fork(const char *name, fnptr function) {
     pid_t pid = creer(name, function);
     return pid;
 }
 
+// code de la fonction de traitement de l'appel systeme exit
 int sys_exit(int n) {
     terminer();
     return 0;
 }
 
+
+// code de la fonction de traitement de l'appel systeme getpid
 pid_t sys_getpid() {
     return getpid();
 }
 
+// code de la fonction de traitement de l'appel systeme sleep
 int sys_sleep(int n) {
     bloquer(n);
     return 0;

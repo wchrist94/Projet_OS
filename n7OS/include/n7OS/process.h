@@ -53,7 +53,6 @@ void debloquer();
 
 
 
-// à fin de tests
 void init_process();
 
 #endif

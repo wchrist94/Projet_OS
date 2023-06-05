@@ -75,6 +75,7 @@ void handler_it_timer()
     format_timer(time++);
 
     sti();
+    // ROUND_ROBIN est défini dans n7OS/process.h
     if (time % ROUND_ROBIN == 0)
         schedule();
 

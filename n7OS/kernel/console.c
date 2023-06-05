@@ -43,6 +43,7 @@ void console_putchar(char c)
     if(c > 31 && c < 127) {
         scr_tab[position++] = 0x0F << 8 | c;
     } else {
+        // Caractère de contrôle
         switch (c) {
             case '\b' :
                 position -= 1;
@@ -75,12 +76,19 @@ void console_putbytes(const char *s, int len)
         console_putchar(s[i]);
 }
 
-void console_putbytes_at(const char *s, int len, int tpos)
+// Affiche une chaîne de caractères à une position donnée
+void console_putbytes_at(const char *s, int len, int target_pos)
 {
+    // On sauvegarde la position courante
     int prev_pos = position;
-    position = tpos;
+    // On se déplace à la position cible
+    position = target_pos;
+    // On actualise le curseur
     console_putcursor();
+    // On affiche la chaîne
     console_putbytes(s, len);
+    // On restaure la position courante
     position = prev_pos;
+    // On actualise le curseur
     console_putcursor();
 }

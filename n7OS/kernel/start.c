@@ -48,14 +48,18 @@ void kernel_start(void)
         //if (example() == 1)
             //printf("Appel systeme example OK\n");
 
-        // Test Syscall shutdown
+        // Test Syscall shutdown OK
         //shutdown(1);
 
-        // Test Syscall write
+        // Test Syscall write OK
         //printf("Appel systeme write OK\n");
 
-        // TEST PROCESS
+        // TEST PROCESS OK
         //init_process();
+
+        // TEST fork OK
+        //pid_t pid = fork("processus1", (fnptr)processus1);
+
         
         hlt();
     }
